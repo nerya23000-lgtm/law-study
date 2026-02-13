@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משפט חוקתי - מערכת לימוד אינטראקטיבית</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #f1f1f1;
+            --text-dim: #a8a8b3;
+            --card-bg: #1e1e3f;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(233, 69, 96, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: rgba(30, 30, 63, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--highlight), #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-title {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .progress-stats {
+            font-size: 1.1em;
+            color: var(--highlight);
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--highlight), #ff6b9d);
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.3) 50%, 
+                transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .tab:hover {
+            transform: translateY(-5px);
+            border-color: var(--highlight);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--highlight), #ff6b9d);
+            border-color: var(--highlight);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .tab-icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Content Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Lessons Grid */
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--highlight), #ff6b9d);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.3);
+            border-color: var(--highlight);
+        }
+
+        .lesson-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .lesson-card.completed {
+            border-color: var(--success);
+        }
+
+        .lesson-card.completed::before {
+            background: var(--success);
+            transform: scaleX(1);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .lesson-date {
+            font-size: 0.9em;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .lesson-status {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .lesson-card.completed .lesson-status {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .lesson-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .lesson-preview {
+            font-size: 0.95em;
+            color: var(--text-dim);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Lesson Content View */
+        .lesson-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            margin-bottom: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .lesson-content h2 {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 2.2em;
+            color: var(--highlight);
+            margin-bottom: 10px;
+        }
+
+        .lesson-content-date {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.05em;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: var(--text);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .mark-complete-btn {
+            background: linear-gradient(135deg, var(--highlight), #ff6b9d);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .mark-complete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .mark-complete-btn.completed {
+            background: var(--success);
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            font-size: 1.3em;
+            line-height: 1.6;
+            text-align: center;
+            border: 2px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--card-bg), var(--accent));
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--highlight), #ff6b9d);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .flashcard-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--highlight);
+            color: var(--text);
+            padding: 15px 35px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flashcard-btn:hover {
+            background: var(--highlight);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(233, 69, 96, 0.3);
+        }
+
+        .flashcard-counter {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: var(--text-dim);
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            background: rgba(233, 69, 96, 0.1);
+            border-color: var(--highlight);
+            transform: translateX(10px);
+        }
+
+        .quiz-option.selected {
+            background: var(--highlight);
+            border-color: var(--highlight);
+        }
+
+        .quiz-option.correct {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .quiz-submit {
+            background: linear-gradient(135deg, var(--highlight), #ff6b9d);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .quiz-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 30px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-size: 1.3em;
+        }
+
+        .quiz-score {
+            font-size: 3em;
+            font-weight: 900;
+            color: var(--highlight);
+            margin: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .flashcard {
+                height: 350px;
+            }
+
+            .flashcard-face {
+                font-size: 1.1em;
+                padding: 30px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--highlight);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6b9d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>משפט חוקתי ישראלי</h1>
+            <p class="subtitle">מערכת לימוד אינטראקטיבית | קורס גילי שוברט</p>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-header">
+                <div class="progress-title">📊 ההתקדמות שלך</div>
+                <div class="progress-stats"><span id="progressPercent">0</span>% מתוך 25 שיעורים</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('lessons')">
+                <span class="tab-icon">📚</span>
+                שיעורים
+            </div>
+            <div class="tab" onclick="switchTab('flashcards')">
+                <span class="tab-icon">🎴</span>
+                כרטיסיות זיכרון
+            </div>
+            <div class="tab" onclick="switchTab('quiz')">
+                <span class="tab-icon">✏️</span>
+                בוחן אותך
+            </div>
+        </div>
+
+        <!-- Lessons Section -->
+        <div id="lessons-section" class="section active">
+            <div id="lessons-list" class="lessons-grid"></div>
+            <div id="lesson-view" style="display: none;"></div>
+        </div>
+
+        <!-- Flashcards Section -->
+        <div id="flashcards-section" class="section">
+            <div class="flashcard-counter" id="flashcardCounter"></div>
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-face flashcard-front" id="flashcardFront"></div>
+                    <div class="flashcard-face flashcard-back" id="flashcardBack"></div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" onclick="prevCard()">← הקודם</button>
+                <button class="flashcard-btn" onclick="nextCard()">הבא →</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="section">
+            <div class="quiz-container" id="quizContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Course data will be embedded here
+        const lessons = [
+            {
+                "date": "30/10/2024",
+                "title": "מה זה משפט חוקתי?",
+                "content": [
+                    "הגדרת תוכנית – כללי המשפטים של הבסיס, שעוסקים בשיטת הממשל, ברשויות השלטון המרכזיות, בזכויות האדם, ולעיתים גם בהיבטי זהות.",
+                    "הגדרה פורמלית – הכללים המשפטיים העליונים - שחקיקה רגילה כפופה להם - הקבועים בדרך כלל בחוקה, במקרה שלנו זה חוקי-היסוד.",
+                    "לא באמת יכולה להיות סתירה של חוקה עם חוקים רגילים. בהיבט הזה חוקי-היסוד הם כמו חוקה בהקשר המסמך המשפטי העליון.",
+                    "ברוב במדינות, יש רשות מיוחדת או מועצה ספציפית, לפעמים אפילו משאל עם, שמוסמכים לכונן חוקה. במדינת ישראל לפעמים זה נקבע מהר, מעכשיו לעכשיו.",
+                    "יש מדינות שיש בהן חוקים 'על-חוקתיים' – שגם תיקונים של החוקה כפופים להם. לפעמים זה רשום בחוקה עצמה כמו בארה״ב.",
+                    "מה הייחוד בישראל? אין חוקה, יש חוקי-יסוד, והחקיקה לא מוסדרת בחוק-יסוד אלא בתקנון הכנסת. מעבירים חוק-יסוד באותו הפורמט של חוק רגיל."
+                ]
+            },
+            {
+                "date": "31/10/2024",
+                "title": "פירמידות הנורמות והמוסדות",
+                "content": [
+                    "פירמידת הנורמות והמוסדות – מטפורה למבנה של כל שיטת משפט, זו התיאוריה של קלזן. כל שיטות המשפט פועלות לפיה.",
+                    "נורמה – כלל מחייב במשפט: זכות/חובה/היתר/סמכות/כפיפות. דוגמאות: חוקה/חוק-יסוד/חוק/תקנה/תקנון/חוזה/צוואה.",
+                    "מוסד – אדם, רשות שלטונית או תאגיד, אשר מוסמך ליצור נורמות. דוגמאות: הכנסת/שרים/כל אדם מגיל 18.",
+                    "שלושת עקרונות הפירמידה: 1) נורמה תקפה רק אם נוצרת על-ידי מוסד ששאב סמכותו מנורמה גבוהה יותר. 2) אסור לנורמה לסתור נורמה גבוהה יותר. 3) ככל שיורדים בדרגה, הנורמה ספציפית יותר.",
+                    "פסקי-הדין נמצאים ליד הפירמידה כי הם גם מחייבים וגם נובעים מהפירמידה כולה.",
+                    "חוק עוקף בג״ץ – חוק שהכנסת חוקקה כדי לעקוף פסק-דין של בית-המשפט העליון."
+                ]
+            },
+            {
+                "date": "06/11/2024",
+                "title": "חוקי-יסוד - היסטוריה",
+                "content": [
+                    "הכרזת העצמאות מ-15 במאי 1948 כללה תשתית משפטית לכל שיטת המשפט והממשל של מדינת ישראל.",
+                    "הבחירות הראשונות התקיימו ב-1949 לאסיפה המכוננת – שסמכותה לקבוע חוקה.",
+                    "עם בחירתה היו שתי רשויות: אסיפה מכוננת (נבחרה בבחירות, סמכותה מוגבלת לכינון חוקה) ומועצת המדינה הזמנית.",
+                    "האסיפה המכוננת שינתה את שמה לכנסת – הכנסת הראשונה. לפי המינוח, הכנסת חובשת שני כובעים.",
+                    "התעוררה מחלוקת האם באמת נדרש לכונן חוקה. חששות: ביקורת שיפוטית, מיעוט היהודים, התורה כחוקת הנצח.",
+                    "החלטת הררי: 'הכנסת הראשונה מטילה על ועדת חוקה להכין הצעת חוקה. החוקה תהיה בנויה פרקים-פרקים באופן שכל אחד יהווה חוק יסודי בפני עצמו.'"
+                ]
+            },
+            {
+                "date": "07/11/2024",
+                "title": "החלטת הררי והכרה במעמד החוקתי",
+                "content": [
+                    "הכנסת הראשונה התפזרה בטרם הספיקה לקבל חוק-יסוד כלשהו.",
+                    "חוק המעבר לכנסת השנייה קבע: 'לכנסת השנייה יהיו כל הסמכויות שהיו לכנסת הראשונה. חוק זה יחול גם על כל כנסת שלאחריה.'",
+                    "כל כנסת היא אסיפה מכוננת. כנסות מימשו את הסמכות כאשר קיבלו 13 חוקי-יסוד שונים.",
+                    "השופט חשין טען שהאסיפה המכוננת קנתה סמכות 'אישית' לכונן חוקה, ולאחר שחדלה נעלמה הסמכות.",
+                    "תפיסה זו אינה מתיישבת עם רציפות השלטון – החוקים והסמכות נשארים בתוקף גם לאחר שמתחלפים האנשים.",
+                    "השופט חשין הוסיף: 'יום מתן חוקה הוא יום חג ומועד. הכול יודעים כי עומדת חוקה להינתן. בימינו נידרש למשאל עם או אסיפה מכוננת.'"
+                ]
+            },
+            {
+                "date": "13/11/2024",
+                "title": "פסקת ההגבלה המשתמעת",
+                "content": [
+                    "בפס״ד מ-2006 השופט חשין כתב: 'המישטר בישראל הוא דמוקרטי, הכנסת היא הרשות הנעלה אולם במסגרת המישטר הדמוקרטי.'",
+                    "אין רשות מרשויות השילטון רשאית לפרוץ אל-מעבר למעטפת, לפגום במעטפת או לנקב אותה.",
+                    "אין זה מסמכותן של רשויות השילטון לפגוע בעיקר מעיקרי הדמוקרטיה.",
+                    "אם עברה הכנסת את קו הגבול התוחם את סמכויותיה, חובה על בית-המשפט להעמיד דברים על מכונם.",
+                    "תפיסת הנשיא ברק: הכנסת הראשונה קבעה בחוק כי הכנסות שלאחריה יורשות את כלל הסמכויות.",
+                    "ישנה המשכיות והאסיפה המכוננת ממשיכה להיבחר מחדש בכל פעם שישנן בחירות לכנסת."
+                ]
+            }
+        ];
+
+        // Generate more lessons data...
+        for (let i = 5; i < 25; i++) {
+            lessons.push({
+                date: `${10 + i}/11/2024`,
+                title: `שיעור ${i + 1} - נושאים מתקדמים`,
+                content: [
+                    `זהו תוכן של שיעור ${i + 1}. כאן יופיע החומר המלא מהמחברת.`,
+                    "נושא זה מתעמק בפרטים נוספים של המשפט החוקתי הישראלי.",
+                    "חשוב להבין את הקשרים בין הנושאים השונים.",
+                    "נלמד על היסטוריה, פסיקה ועקרונות יסוד."
+                ]
+            });
+        }
+
+        // State management
+        let completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || [];
+        let currentFlashcard = 0;
+        let flashcardFlipped = false;
+
+        // Initialize
+        function init() {
+            renderLessons();
+            updateProgress();
+            generateFlashcards();
+            generateQuiz();
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            event.target.closest('.tab').classList.add('active');
+            document.getElementById(`${tab}-section`).classList.add('active');
+
+            if (tab === 'lessons') {
+                document.getElementById('lessons-list').style.display = 'grid';
+                document.getElementById('lesson-view').style.display = 'none';
+            }
+        }
+
+        // Render lessons
+        function renderLessons() {
+            const container = document.getElementById('lessons-list');
+            container.innerHTML = '';
+
+            lessons.forEach((lesson, index) => {
+                const isCompleted = completedLessons.includes(index);
+                const card = document.createElement('div');
+                card.className = `lesson-card ${isCompleted ? 'completed' : ''}`;
+                card.onclick = () => openLesson(index);
+
+                card.innerHTML = `
+                    <div class="lesson-header">
+                        <div class="lesson-date">${lesson.date}</div>
+                        <div class="lesson-status">${isCompleted ? '✓' : ''}</div>
+                    </div>
+                    <div class="lesson-title">${lesson.title}</div>
+                    <div class="lesson-preview">${lesson.content[0]}</div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Open lesson
+        function openLesson(index) {
+            const lesson = lessons[index];
+            const isCompleted = completedLessons.includes(index);
+
+            document.getElementById('lessons-list').style.display = 'none';
+            const view = document.getElementById('lesson-view');
+            view.style.display = 'block';
+
+            view.innerHTML = `
+                <button class="back-button" onclick="closeLesson()">→ חזרה לרשימה</button>
+                <button class="mark-complete-btn ${isCompleted ? 'completed' : ''}" onclick="toggleComplete(${index})">
+                    ${isCompleted ? '✓ הושלם' : 'סמן כהושלם'}
+                </button>
+                <div class="lesson-content">
+                    <h2>${lesson.title}</h2>
+                    <div class="lesson-content-date">${lesson.date}</div>
+                    ${lesson.content.map(p => `<p>${p}</p>`).join('')}
+                </div>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Close lesson
+        function closeLesson() {
+            document.getElementById('lessons-list').style.display = 'grid';
+            document.getElementById('lesson-view').style.display = 'none';
+        }
+
+        // Toggle lesson completion
+        function toggleComplete(index) {
+            if (completedLessons.includes(index)) {
+                completedLessons = completedLessons.filter(i => i !== index);
+            } else {
+                completedLessons.push(index);
+            }
+            localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+            updateProgress();
+            openLesson(index);
+            renderLessons();
+        }
+
+        // Update progress
+        function updateProgress() {
+            const percent = Math.round((completedLessons.length / lessons.length) * 100);
+            document.getElementById('progressPercent').textContent = percent;
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // Flashcards
+        const flashcards = [
+            { q: "מהי ההגדרה הפורמלית של משפט חוקתי?", a: "הכללים המשפטיים העליונים - שחקיקה רגילה כפופה להם - הקבועים בדרך כלל בחוקה, במקרה שלנו חוקי-היסוד" },
+            { q: "מהו הייחוד של ישראל במשפט החוקתי?", a: "אין חוקה, יש חוקי-יסוד. החקיקה לא מוסדרת בחוק-יסוד אלא בתקנון הכנסת. מעבירים חוק-יסוד באותו פורמט של חוק רגיל" },
+            { q: "מהי תיאוריית פירמידת הנורמות?", a: "תיאוריה של קלזן שמתארת את מבנה כל שיטת משפט - נורמות מסודרות היררכית, כל נורמה שואבת תוקף מנורמה גבוהה יותר" },
+            { q: "מהי החלטת הררי?", a: "החלטה מ-1950 שקבעה שהכנסת תכין חוקה פרקים-פרקים, כשכל פרק יהווה חוק-יסוד בפני עצמו, והפרקים יחד יתאגדו לחוקת המדינה" },
+            { q: "מה היה תוכן הכרזת העצמאות?", a: "הכרזת העצמאות כללה תשתית משפטית לשיטת המשפט והממשל, קבעה שמועצת העם תפעל כמועצת מדינה זמנית עד להקמת השלטונות הנבחרים" },
+            { q: "מהו חוק עוקף בג״ץ?", a: "חוק שהכנסת חוקקה כדי לעקוף פסק-דין של בית-המשפט העליון, בדרך כלל משתמש בפסקת התגברות" },
+            { q: "מהם שלושת עקרונות הפירמידה?", a: "1) נורמה תקפה רק אם נוצרת על-ידי מוסד ששאב סמכותו מנורמה גבוהה יותר 2) אסור לנורמה לסתור נורמה גבוהה 3) ככל שיורדים בדרגה הנורמה ספציפית יותר" },
+            { q: "מהי עמדת השופט חשין?", a: "טען שהאסיפה המכוננת קנתה סמכות 'אישית' לכונן חוקה, ולאחר שחדלה נעלמה הסמכות. כנסות שבאו אחריה לא ירשו את הסמכות" },
+            { q: "מהי תפיסת הנשיא ברק?", a: "הכנסת הראשונה קבעה בחוק כי הכנסות שלאחריה יורשות את כלל הסמכויות. ישנה המשכיות והאסיפה המכוננת ממשיכה להיבחר מחדש" },
+            { q: "מהי פסקת ההגבלה המשתמעת?", a: "עקרון לפיו אין רשות מרשויות השלטון רשאית לפגוע בעיקר מעיקרי הדמוקרטיה. המישטר הדמוקרטי הוא המעטפת שבתוכה פועלות כל הרשויות" }
+        ];
+
+        function generateFlashcards() {
+            showFlashcard(0);
+        }
+
+        function showFlashcard(index) {
+            if (index < 0 || index >= flashcards.length) return;
+            currentFlashcard = index;
+            flashcardFlipped = false;
+
+            document.getElementById('flashcard').classList.remove('flipped');
+            document.getElementById('flashcardFront').textContent = flashcards[index].q;
+            document.getElementById('flashcardBack').textContent = flashcards[index].a;
+            document.getElementById('flashcardCounter').textContent = `כרטיסייה ${index + 1} מתוך ${flashcards.length}`;
+        }
+
+        function flipCard() {
+            const card = document.getElementById('flashcard');
+            card.classList.toggle('flipped');
+            flashcardFlipped = !flashcardFlipped;
+        }
+
+        function nextCard() {
+            if (currentFlashcard < flashcards.length - 1) {
+                showFlashcard(currentFlashcard + 1);
+            }
+        }
+
+        function prevCard() {
+            if (currentFlashcard > 0) {
+                showFlashcard(currentFlashcard - 1);
+            }
+        }
+
+        // Quiz
+        const quizQuestions = [
+            {
+                q: "מהי ההגדרה הפורמלית של משפט חוקתי?",
+                options: [
+                    "הכללים המשפטיים העליונים שחקיקה רגילה כפופה להם",
+                    "כללי המשפטים העוסקים בזכויות האדם בלבד",
+                    "החוקים שנקבעים על-ידי בית המשפט העליון",
+                    "התקנות והחוקים הרגילים של הכנסת"
+                ],
+                correct: 0
+            },
+            {
+                q: "מה הייחוד של ישראל במשפט החוקתי?",
+                options: [
+                    "יש חוקה מלאה שנכתבה ב-1948",
+                    "אין חוקה, יש חוקי-יסוד שמועברים כחוקים רגילים",
+                    "החוקה נקבעת על-ידי משאל עם",
+                    "יש חוקה אך היא אינה מחייבת"
+                ],
+                correct: 1
+            },
+            {
+                q: "מהי החלטת הררי?",
+                options: [
+                    "החלטה לבטל את החוקה",
+                    "החלטה לבנות חוקה פרקים-פרקים כחוקי-יסוד",
+                    "החלטה להקים בית משפט עליון",
+                    "החלטה על הרכב הכנסת"
+                ],
+                correct: 1
+            },
+            {
+                q: "מי היה השופט שטען שהכנסת לא ירשה את הסמכות המכוננת?",
+                options: [
+                    "השופט ברק",
+                    "השופט חשין",
+                    "השופט בנדור",
+                    "השופט שמגר"
+                ],
+                correct: 1
+            },
+            {
+                q: "מהו עקרון רציפות השלטון?",
+                options: [
+                    "החוקים נשארים בתוקף גם כשמתחלפים האנשים במוסדות",
+                    "אסור לשנות חוקים",
+                    "הכנסת צריכה להיבחר כל שנה",
+                    "הממשלה צריכה להיות קבועה"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswer = null;
+        let quizScore = 0;
+        let answeredQuestions = [];
+
+        function generateQuiz() {
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= quizQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            const container = document.getElementById('quizContainer');
+
+            container.innerHTML = `
+                <div class="quiz-question">${currentQuestion + 1}. ${q.q}</div>
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" onclick="selectOption(${i})">${opt}</div>
+                    `).join('')}
+                </div>
+                <button class="quiz-submit" onclick="submitAnswer()">בדוק תשובה</button>
+                <div style="text-align: center; margin-top: 20px; color: var(--text-dim);">
+                    שאלה ${currentQuestion + 1} מתוך ${quizQuestions.length}
+                </div>
+            `;
+        }
+
+        function selectOption(index) {
+            document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) {
+                    opt.classList.add('selected');
+                }
+            });
+            selectedAnswer = index;
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null) {
+                alert('בחר תשובה תחילה!');
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+
+            options.forEach((opt, i) => {
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === selectedAnswer) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+
+            if (selectedAnswer === q.correct) {
+                quizScore++;
+            }
+
+            answeredQuestions.push({
+                question: currentQuestion,
+                correct: selectedAnswer === q.correct
+            });
+
+            setTimeout(() => {
+                currentQuestion++;
+                selectedAnswer = null;
+                showQuestion();
+            }, 2000);
+        }
+
+        function showResults() {
+            const container = document.getElementById('quizContainer');
+            const percent = Math.round((quizScore / quizQuestions.length) * 100);
+
+            container.innerHTML = `
+                <div class="quiz-result">
+                    <h2 style="color: var(--highlight); font-family: 'Frank Ruhl Libre', serif;">תוצאות הבוחן</h2>
+                    <div class="quiz-score">${percent}%</div>
+                    <p style="font-size: 1.3em; margin: 20px 0;">
+                        ענית נכון על ${quizScore} מתוך ${quizQuestions.length} שאלות!
+                    </p>
+                    <p style="color: var(--text-dim); margin-top: 20px;">
+                        ${percent >= 80 ? '🎉 מצוין! אתה שולט בחומר!' : 
+                          percent >= 60 ? '👍 טוב! עוד קצת תרגול ותהיה מושלם' : 
+                          '📚 כדאי לחזור על החומר ולנסות שוב'}
+                    </p>
+                    <button class="quiz-submit" onclick="restartQuiz()" style="margin-top: 30px;">
+                        נסה שוב
+                    </button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            selectedAnswer = null;
+            quizScore = 0;
+            answeredQuestions = [];
+            showQuestion();
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
